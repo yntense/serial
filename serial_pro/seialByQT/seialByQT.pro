@@ -15,18 +15,13 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     serialreader.cpp \
-    serialreadwriter.cpp \
-    serialtest.cpp \
-    serialwriter.cpp
+    serialreadwriter.cpp
 
 HEADERS += \
     controlserial.h \
     icontrolserial.h \
     mainwindow.h \
-    serialreader.h \
-    serialreadwriter.h \
-    serialtest.h \
-    serialwriter.h
+    serialreadwriter.h
 
 FORMS += \
     mainwindow.ui

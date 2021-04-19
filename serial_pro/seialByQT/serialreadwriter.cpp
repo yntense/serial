@@ -34,6 +34,7 @@ bool SerialReadWriter::onOpenSerial()
                  << endl;
         return false;
     }
+    qDebug()<< "open seial" ;
     return true;
 }
 
@@ -52,6 +53,7 @@ bool SerialReadWriter::onReOpenSerial()
                  << endl;
         return false;
     }
+
     return true;
 
 }
@@ -63,6 +65,7 @@ void SerialReadWriter::onCloseSerial()
     {
         disconnect(m_serial, &QSerialPort::readyRead,this,&SerialReadWriter::onReceivedData);
         m_serial->close();
+        qDebug()<< "close seial" ;
     }
 
 }

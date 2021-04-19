@@ -21,9 +21,8 @@ private:
     SerialReadWriter * m_serialReadWriter;
     QSerialPort* m_serial;
     eSerialState m_serialState;
-
 signals:
-     void connect(QSerialPort* );
+
 
 public slots:
      void onConfigSerial(sSerialParams params ) override;
