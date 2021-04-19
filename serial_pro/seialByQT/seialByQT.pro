@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,11 +10,23 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    controlserial.cpp \
+    icontrolserial.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    serialreader.cpp \
+    serialreadwriter.cpp \
+    serialtest.cpp \
+    serialwriter.cpp
 
 HEADERS += \
-    mainwindow.h
+    controlserial.h \
+    icontrolserial.h \
+    mainwindow.h \
+    serialreader.h \
+    serialreadwriter.h \
+    serialtest.h \
+    serialwriter.h
 
 FORMS += \
     mainwindow.ui
