@@ -2,7 +2,6 @@
 
 #include <QApplication>
 
-#include "serialtest.h"
 #include "controlserial.h"
 
 int main(int argc, char *argv[])
@@ -17,12 +16,10 @@ int main(int argc, char *argv[])
     QObject::connect(&w,&MainWindow::closeSerial,&controlSerial,&ControlSerial::onClose);
     QObject::connect(&w,&MainWindow::configSerial,&controlSerial,&ControlSerial::onConfigSerial);
     QObject::connect(&w,&MainWindow::writeSerialData,&controlSerial,&ControlSerial::onWriteData);
+    QObject::connect(&w,&MainWindow::updateSerialList,&controlSerial,&ControlSerial::onGetSerialList);
+    QObject::connect(&controlSerial,&ControlSerial::updateSerialList,&w,&MainWindow::onUpdateSerialList);
 
     controlSerialThread.start();
-
-#if 0
-    serialTest serialTester ;
-#endif
 
     return a.exec();
 }

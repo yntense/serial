@@ -1,17 +1,11 @@
 #include "controlserial.h"
 
 #include <QTime>
+
 ControlSerial::ControlSerial(QObject *parent):IControlSerial(parent)
 {
 
-  m_serialReader = new SerialReader();
-  m_serialReader->moveToThread(&SerialReaderThread);
-  SerialReaderThread.start();
-
-  m_serialWriter = new SerialWriter();
-  m_serialWriter->moveToThread(&SerialWriteThread);
-  SerialWriteThread.start();
-
+  qRegisterMetaType<QList<QSerialPortInfo>>();
   m_serialReadWriter = new SerialReadWriter();
   m_serialReadWriter->moveToThread(&serialReadWriterThread);
   serialReadWriterThread.start();
@@ -48,5 +42,12 @@ void ControlSerial::onClose()
     QMetaObject::invokeMethod(m_serialReadWriter, "onCloseSerial", Qt::QueuedConnection
                               );
 
+
+}
+
+void ControlSerial::onGetSerialList()
+{
+   const auto infos = QSerialPortInfo::availablePorts();
+   emit updateSerialList(infos);
 
 }

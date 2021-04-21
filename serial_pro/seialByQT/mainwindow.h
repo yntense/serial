@@ -24,9 +24,15 @@ signals:
     void closeSerial();
     void configSerial(IControlSerial::sSerialParams params);
     void writeSerialData(const QByteArray &data);
+    void updateSerialList();
+
+public slots:
+    void onUpdateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
 
 private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
+
+
 };
 #endif // MAINWINDOW_H

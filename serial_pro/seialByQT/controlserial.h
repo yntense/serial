@@ -3,32 +3,29 @@
 #include <QThread>
 
 #include "icontrolserial.h"
-#include "serialreader.h"
-#include "serialwriter.h"
 #include "serialreadwriter.h"
 
 class ControlSerial : public IControlSerial
 {
+    Q_OBJECT
 public:
     ControlSerial(QObject *parent = nullptr);
 
 private:
-    SerialWriter * m_serialWriter;
-    QThread SerialWriteThread;
-    QThread SerialReaderThread;
-    SerialReader * m_serialReader;
     QThread serialReadWriterThread;
     SerialReadWriter * m_serialReadWriter;
     QSerialPort* m_serial;
     eSerialState m_serialState;
 signals:
-
+    void updateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
 
 public slots:
      void onConfigSerial(sSerialParams params ) override;
      void onWriteData(const QByteArray &data) override;
      void onOpen() override;
      void onClose() override;
+     void onGetSerialList();
 };
 
+Q_DECLARE_METATYPE(QList<QSerialPortInfo>);
 #endif // CONTROLSERIAL_H
