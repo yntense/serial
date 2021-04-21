@@ -14,7 +14,6 @@ SOURCES += \
     icontrolserial.cpp \
     main.cpp \
     mainwindow.cpp \
-    serialreader.cpp \
     serialreadwriter.cpp
 
 HEADERS += \
