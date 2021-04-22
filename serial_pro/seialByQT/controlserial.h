@@ -18,6 +18,7 @@ private:
     eSerialState m_serialState;
 signals:
     void updateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
+    void updateSerialState(const IControlSerial::eSerialState &serialState);
 
 public slots:
      void onConfigSerial(sSerialParams params ) override;

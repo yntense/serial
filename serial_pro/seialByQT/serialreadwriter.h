@@ -13,10 +13,12 @@ public:
 signals:
     void receivedData(QByteArray data);
     void writtenDataLengh(int lengh);
+    void updateSerialState(const IControlSerial::eSerialState &serialState);
 
 private:
     QSerialPort* m_serial;
     IControlSerial::sSerialParams m_serialParams;
+    IControlSerial::eSerialState m_serialState;
 
 public slots:
     void onInit();

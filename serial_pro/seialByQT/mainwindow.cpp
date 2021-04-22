@@ -4,9 +4,23 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , serialState(false)
+    , m_serialState(IControlSerial::CLOSE_SUCCESS)
 {
+
     ui->setupUi(this);
+    QStringList BaudRateList ,DataBitsList,stopBitsList,parityList,flowControlList;
+    BaudRateList << "1200" << "2400" << "4800" << "9600" << "19200" << "38400" << "57600" << "115200";
+    DataBitsList << "5" << "6" << "7" << "8";
+    stopBitsList << "1" << "3" << "2";
+    parityList << "0" << "2" << "3" << "4" << "5";
+    flowControlList << "none" << "hardware" << "software";
+    ui->m_baudRate->insertItems(0,BaudRateList);
+    ui->m_dataBits->insertItems(0,DataBitsList);
+    ui->m_stopBits->insertItems(0,stopBitsList);
+    ui->m_parity->insertItems(0,parityList);
+    ui->m_flowControl->insertItems(0,flowControlList);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -15,31 +29,15 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_pushButton_clicked()
-{
-    if(!serialState)
-    {
-        IControlSerial::sSerialParams params;
-        emit configSerial(params);
-        emit openSerial();
-        serialState = true;
-    }else{
-        emit closeSerial();
-        serialState = false;
-    }
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    QString data = "hello write";
-    emit writeSerialData(data.toUtf8());
-    emit updateSerialList();
-}
-
 void MainWindow::onUpdateSerialList(const QList<QSerialPortInfo> &serialInfoLists)
 {
-
+    QSet<QString> portSet = m_portList.toSet();
     for (const QSerialPortInfo &info : serialInfoLists) {
+        if(!portSet.contains(info.portName()))
+        {
+            m_portList << info.portName();
+            ui->port->insertItem(m_portList.size(),info.portName());
+        }
         QString s = QObject::tr("Port: ") + info.portName() + "\n"
                     + QObject::tr("Location: ") + info.systemLocation() + "\n"
                     + QObject::tr("Description: ") + info.description() + "\n"
@@ -51,4 +49,198 @@ void MainWindow::onUpdateSerialList(const QList<QSerialPortInfo> &serialInfoList
         qDebug()<< s <<endl;
     }
 
+
+}
+
+void MainWindow::on_port_currentIndexChanged(const QString &arg1)
+{
+    qDebug()<< arg1 <<endl;
+    m_params.serialName = arg1;
+}
+
+void MainWindow::on_port_activated(const QString &arg1)
+{
+     qDebug()<< arg1 <<endl;
+     emit updateSerialList();
+}
+
+
+void MainWindow::on_open_clicked()
+{
+
+    switch (m_serialState) {
+    case IControlSerial::OPEN_FAIL:
+    {
+        emit configSerial(m_params);
+        emit openSerial();
+
+    }
+        break;
+    case IControlSerial::CLOSE_SUCCESS:
+    {
+        emit configSerial(m_params);
+        emit openSerial();
+
+    }
+        break;
+    case IControlSerial::OPEN_SUCCESS:
+    {
+        emit closeSerial();
+    }
+        break;
+    default:
+        break;
+    }
+}
+
+void MainWindow::on_listen_serial_state(const IControlSerial::eSerialState &serialState)
+{
+     m_serialState = serialState;
+     switch (m_serialState) {
+     case IControlSerial::OPEN_FAIL:
+     {
+        ui->open->setText("open");
+
+     }
+         break;
+     case IControlSerial::OPEN_SUCCESS:
+     {
+         ui->open->setText("close");
+     }
+         break;
+     case IControlSerial::CLOSE_SUCCESS:
+     {
+         ui->open->setText("open");
+     }
+         break;
+     default:
+         break;
+     }
+}
+
+
+void MainWindow::on_m_stopBits_currentIndexChanged(const QString &stopBits)
+{
+    if(stopBits == "1")
+    {
+        m_params.stopBits = QSerialPort::OneStop;
+
+    }else if(stopBits == "3")
+    {
+        m_params.stopBits = QSerialPort::OneAndHalfStop;
+
+    }else if(stopBits == "2")
+    {
+        m_params.stopBits = QSerialPort::TwoStop;
+
+    }
+}
+
+
+
+void MainWindow::on_m_parity_currentIndexChanged(const QString &parity)
+{
+
+    if(parity == "0")
+    {
+        m_params.parity = QSerialPort::NoParity;
+
+    }else if(parity == "2")
+    {
+        m_params.parity = QSerialPort::EvenParity;
+
+    }else if(parity == "3")
+    {
+        m_params.parity = QSerialPort::OddParity;
+
+    }else if(parity == "4")
+    {
+        m_params.parity = QSerialPort::SpaceParity;
+
+    }else if(parity == "5")
+    {
+        m_params.parity = QSerialPort::MarkParity;
+
+    }
+}
+
+void MainWindow::on_m_flowControl_currentIndexChanged(const QString &flowContol)
+{
+    if(flowContol == "none")
+    {
+        m_params.flowControl = QSerialPort::NoFlowControl;
+
+    }else if(flowContol == "hardware")
+    {
+        m_params.flowControl = QSerialPort::HardwareControl;
+
+    }else if(flowContol == "software")
+    {
+        m_params.flowControl = QSerialPort::SoftwareControl;
+    }
+}
+
+void MainWindow::on_m_dataBits_currentIndexChanged(const QString &dataBits)
+{
+    if(dataBits == "5")
+    {
+        m_params.dataBits = QSerialPort::Data5;
+
+    }else if(dataBits == "6")
+    {
+        m_params.dataBits = QSerialPort::Data6;
+
+    }else if(dataBits == "7")
+    {
+        m_params.dataBits = QSerialPort::Data7;
+
+    }else if(dataBits == "8")
+    {
+        m_params.dataBits = QSerialPort::Data8;
+
+    }
+}
+
+void MainWindow::on_m_sendbutton_clicked()
+{
+
+    emit writeSerialData(ui->m_writeArea->toPlainText().toUtf8());
+}
+
+void MainWindow::on_m_baudRate_currentIndexChanged(const QString &baudRate)
+{
+    if(baudRate == "1200")
+    {
+        m_params.bauRate = QSerialPort::Baud1200;
+
+    }else if(baudRate == "2400")
+    {
+        m_params.bauRate = QSerialPort::Baud2400;
+
+    }else if(baudRate == "4800")
+    {
+        m_params.bauRate = QSerialPort::Baud4800;
+
+    }else if(baudRate == "9600")
+    {
+        m_params.bauRate = QSerialPort::Baud9600;
+
+    }else if(baudRate == "19200")
+    {
+        m_params.bauRate = QSerialPort::Baud19200;
+
+    }else if(baudRate == "38400")
+    {
+        m_params.bauRate = QSerialPort::Baud38400;
+
+    }else if(baudRate == "57600")
+    {
+        m_params.bauRate = QSerialPort::Baud57600;
+
+    }else if(baudRate == "115200")
+    {
+        m_params.bauRate = QSerialPort::Baud115200;
+
+    }
+    qDebug()<< m_params.bauRate <<endl;
 }
