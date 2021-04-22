@@ -24,6 +24,7 @@ private:
     IControlSerial::sSerialParams m_params;
     QThread m_controlSerialThread;
     ControlSerial *m_controlSerial;
+
 signals:
     void openSerial();
     void closeSerial();
@@ -34,7 +35,7 @@ signals:
 
 public slots:
     void onUpdateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
-    void on_listen_serial_state(const IControlSerial::eSerialState &serialState);
+    void onListenSerialState(const IControlSerial::eSerialState &serialState);
 
 private slots:
     void on_port_currentIndexChanged(const QString &arg1);

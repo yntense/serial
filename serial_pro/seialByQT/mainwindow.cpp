@@ -18,8 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(this,&MainWindow::writeSerialData,m_controlSerial,&ControlSerial::onWriteData);
     QObject::connect(this,&MainWindow::updateSerialList,m_controlSerial,&ControlSerial::onGetSerialList);
     QObject::connect(m_controlSerial,&ControlSerial::updateSerialList,this,&MainWindow::onUpdateSerialList);
-    QObject::connect(m_controlSerial,&ControlSerial::updateSerialState,this,&MainWindow::on_listen_serial_state);
+    QObject::connect(m_controlSerial,&ControlSerial::updateSerialState,this,&MainWindow::onListenSerialState);
     m_controlSerialThread.start();
+    emit updateSerialList();
 
     QStringList BaudRateList ,DataBitsList,stopBitsList,parityList,flowControlList;
     BaudRateList << "1200" << "2400" << "4800" << "9600" << "19200" << "38400" << "57600" << "115200";
@@ -109,7 +110,7 @@ void MainWindow::on_open_clicked()
     }
 }
 
-void MainWindow::on_listen_serial_state(const IControlSerial::eSerialState &serialState)
+void MainWindow::onListenSerialState(const IControlSerial::eSerialState &serialState)
 {
      m_serialState = serialState;
      switch (m_serialState) {
