@@ -9,8 +9,9 @@ class IControlSerial : public QObject
 public:
     typedef enum
     {
-        Fail = 0,
-        SUCCESS = 0
+        OPEN_FAIL = 0,
+        OPEN_SUCCESS,
+        CLOSE_SUCCESS
 
     }eSerialState;
 

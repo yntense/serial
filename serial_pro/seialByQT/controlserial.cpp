@@ -9,6 +9,7 @@ ControlSerial::ControlSerial(QObject *parent):IControlSerial(parent)
   m_serialReadWriter = new SerialReadWriter();
   m_serialReadWriter->moveToThread(&serialReadWriterThread);
   serialReadWriterThread.start();
+  connect(m_serialReadWriter,&SerialReadWriter::updateSerialState,this,&ControlSerial::updateSerialState);
   QTimer::singleShot(0,m_serialReadWriter,&SerialReadWriter::onInit);
 }
 

@@ -18,7 +18,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    bool serialState;
+    IControlSerial::eSerialState m_serialState;
+    QStringList m_portList;
+    IControlSerial::sSerialParams m_params;
 signals:
     void openSerial();
     void closeSerial();
@@ -28,11 +30,17 @@ signals:
 
 public slots:
     void onUpdateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
+    void on_listen_serial_state(const IControlSerial::eSerialState &serialState);
 
 private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
-
-
+    void on_port_currentIndexChanged(const QString &arg1);
+    void on_port_activated(const QString &arg1);
+    void on_open_clicked();
+    void on_m_stopBits_currentIndexChanged(const QString &arg1);
+    void on_m_parity_currentIndexChanged(const QString &arg1);
+    void on_m_flowControl_currentIndexChanged(const QString &arg1);
+    void on_m_dataBits_currentIndexChanged(const QString &arg1);
+    void on_m_sendbutton_clicked();
+    void on_m_baudRate_currentIndexChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H
