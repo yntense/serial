@@ -8,6 +8,19 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+
+    m_controlSerial = new ControlSerial();
+    m_controlSerial->moveToThread(&m_controlSerialThread);
+    QObject::connect(&m_controlSerialThread, &QThread::finished, m_controlSerial, &QObject::deleteLater);
+    QObject::connect(this,&MainWindow::openSerial,m_controlSerial,&ControlSerial::onOpen);
+    QObject::connect(this,&MainWindow::closeSerial,m_controlSerial,&ControlSerial::onClose);
+    QObject::connect(this,&MainWindow::configSerial,m_controlSerial,&ControlSerial::onConfigSerial);
+    QObject::connect(this,&MainWindow::writeSerialData,m_controlSerial,&ControlSerial::onWriteData);
+    QObject::connect(this,&MainWindow::updateSerialList,m_controlSerial,&ControlSerial::onGetSerialList);
+    QObject::connect(m_controlSerial,&ControlSerial::updateSerialList,this,&MainWindow::onUpdateSerialList);
+    QObject::connect(m_controlSerial,&ControlSerial::updateSerialState,this,&MainWindow::on_listen_serial_state);
+    m_controlSerialThread.start();
+
     QStringList BaudRateList ,DataBitsList,stopBitsList,parityList,flowControlList;
     BaudRateList << "1200" << "2400" << "4800" << "9600" << "19200" << "38400" << "57600" << "115200";
     DataBitsList << "5" << "6" << "7" << "8";
@@ -25,7 +38,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    m_controlSerialThread.quit();
+    m_controlSerialThread.wait();
     delete ui;
+
 }
 
 

@@ -8,9 +8,15 @@ ControlSerial::ControlSerial(QObject *parent):IControlSerial(parent)
   qRegisterMetaType<QList<QSerialPortInfo>>();
   m_serialReadWriter = new SerialReadWriter();
   m_serialReadWriter->moveToThread(&serialReadWriterThread);
+  connect(&serialReadWriterThread, &QThread::finished, m_serialReadWriter, &QObject::deleteLater);
   serialReadWriterThread.start();
   connect(m_serialReadWriter,&SerialReadWriter::updateSerialState,this,&ControlSerial::updateSerialState);
   QTimer::singleShot(0,m_serialReadWriter,&SerialReadWriter::onInit);
+}
+
+ControlSerial::~ControlSerial() {
+    serialReadWriterThread.quit();
+    serialReadWriterThread.wait();
 }
 
 void ControlSerial::onConfigSerial(sSerialParams params)

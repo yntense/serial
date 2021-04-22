@@ -10,12 +10,13 @@ class ControlSerial : public IControlSerial
     Q_OBJECT
 public:
     ControlSerial(QObject *parent = nullptr);
-
+    ~ControlSerial() ;
 private:
     QThread serialReadWriterThread;
     SerialReadWriter * m_serialReadWriter;
     QSerialPort* m_serial;
     eSerialState m_serialState;
+
 signals:
     void updateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
     void updateSerialState(const IControlSerial::eSerialState &serialState);

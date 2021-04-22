@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "icontrolserial.h"
+#include "controlserial.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -21,12 +22,15 @@ private:
     IControlSerial::eSerialState m_serialState;
     QStringList m_portList;
     IControlSerial::sSerialParams m_params;
+    QThread m_controlSerialThread;
+    ControlSerial *m_controlSerial;
 signals:
     void openSerial();
     void closeSerial();
     void configSerial(IControlSerial::sSerialParams params);
     void writeSerialData(const QByteArray &data);
     void updateSerialList();
+    void ui_destroyed();
 
 public slots:
     void onUpdateSerialList(const QList<QSerialPortInfo> &serialInfoLists);
